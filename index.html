@@ -3,11 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Finance Team Assistant</title>
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Savings Goal Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Starter file: almost empty on purpose. OpenCode builds the page. -->
+  <main class="page-shell">
+    <header class="topbar" aria-label="Finance tools">
+      <a class="brand" href="#main" aria-label="Ruang Finance home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>ruang<span class="brand-light">finance</span></span>
+      </a>
+      <span class="topbar-note"><span class="status-dot"></span> Personal planning tool</span>
+    </header>
+
+    <section class="calculator-layout" id="main" aria-labelledby="page-title">
+      <div class="intro">
+        <p class="eyebrow">Make room for what's next</p>
+        <h1 id="page-title">A little each month.<br><span>A lot over time.</span></h1>
+        <p class="intro-copy">See how your monthly savings could grow. Set a goal, choose a timeline, and explore the power of steady progress.</p>
+        <div class="quiet-note">
+          <span class="note-icon" aria-hidden="true">↗</span>
+          <p>Future value is an estimate, not a guarantee. Actual returns may vary.</p>
+        </div>
+      </div>
+
+      <section class="calculator-card" aria-label="Savings growth calculator">
+        <div class="card-heading">
+          <div><p class="card-kicker">Your savings plan</p><h2>Let’s run the numbers</h2></div>
+          <span class="step-tag">01 <span>/ 01</span></span>
+        </div>
+        <form id="savings-form" novalidate>
+          <div class="field-group">
+            <label for="monthly-saving">Monthly savings</label>
+            <div class="input-wrap"><span class="input-prefix" aria-hidden="true">Rp</span><input id="monthly-saving" name="monthly-saving" type="number" min="0" step="any" inputmode="decimal" placeholder="2.500.000" aria-describedby="monthly-hint monthly-error" required></div>
+            <span class="field-hint" id="monthly-hint">How much can you set aside each month?</span><span class="field-error" id="monthly-error"></span>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label for="years">Saving period</label>
+              <div class="input-wrap"><input id="years" name="years" type="number" min="0" step="any" inputmode="decimal" placeholder="10" aria-describedby="years-hint years-error" required><span class="input-suffix">years</span></div>
+              <span class="field-hint" id="years-hint">Your time horizon</span><span class="field-error" id="years-error"></span>
+            </div>
+            <div class="field-group">
+              <label for="return-rate">Expected yearly return</label>
+              <div class="input-wrap"><input id="return-rate" name="return-rate" type="number" min="0" step="any" inputmode="decimal" placeholder="5" aria-describedby="return-hint return-error" required><span class="input-suffix">%</span></div>
+              <span class="field-hint" id="return-hint">An estimated annual rate</span><span class="field-error" id="return-error"></span>
+            </div>
+          </div>
+          <button class="calculate-button" type="submit">Calculate my savings <span aria-hidden="true">→</span></button>
+          <p class="form-note">Your numbers stay in this browser and aren’t saved.</p>
+        </form>
+        <section class="result" id="result" aria-live="polite" aria-atomic="true" hidden>
+          <div class="result-topline"><span class="result-dot"></span><span>Your projected balance</span></div>
+          <p class="result-amount" id="result-amount">Rp0</p>
+          <p class="result-detail" id="result-detail"></p>
+          <div class="result-breakdown" aria-label="Savings breakdown">
+            <div class="breakdown-item"><span>Amount saved</span><strong id="amount-saved">Rp0</strong></div>
+            <div class="breakdown-item growth-item"><span>Growth</span><strong id="growth-amount">Rp0</strong></div>
+          </div>
+          <p class="breakdown-share" id="breakdown-share"></p>
+        </section>
+      </section>
+    </section>
+    <footer class="page-footer"><span>Ruang Finance</span><span>Plan steadily. Grow thoughtfully.</span></footer>
+  </main>
   <script src="app.js"></script>
 </body>
 </html>
