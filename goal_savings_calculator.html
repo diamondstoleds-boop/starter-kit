@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabungan Target — Calculator</title>
+<style>
+  :root {
+    --bg1: #f6f9fc;
+    --bg2: #e9eef5;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-soft: #eef2ff;
+    --low: #f59e0b;
+    --base: #4f46e5;
+    --best: #10b981;
+    --low-soft: #fffbeb;
+    --base-soft: #eef2ff;
+    --best-soft: #ecfdf5;
+    --inf: #94a3b8;
+    --shadow: 0 8px 30px rgba(0,0,0,0.06);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 2rem; }
+  header h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  header p { color: var(--muted); margin-top: 0.3rem; font-size: 0.95rem; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .slider-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .slider-row:last-of-type { border-bottom: none; }
+  .slider-row .field-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 8.5rem;
+    letter-spacing: 0.01em;
+  }
+  .slider-row input[type=range] {
+    flex: 1 1 150px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--line);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .slider-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .slider-row input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.14);
+    box-shadow: 0 4px 12px rgba(79,70,229,0.32);
+  }
+  .slider-row input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18); cursor: pointer;
+  }
+  .slider-row .value-display {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 7.2rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .button-row {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1rem 0 1.25rem;
+  }
+  .btn {
+    padding: 0.7rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .button-row .btn { flex: 1; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    box-shadow: none;
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: var(--line); color: var(--text); }
+
+  .breakdown {
+    margin-top: 1.25rem;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .breakdown-row:last-of-type { border-bottom: none; }
+  .b-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .b-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .breakdown-row.total .b-value { color: var(--best); }
+
+  .result { display: none; animation: fadeUp 0.35s ease; }
+  .result.visible { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .scenario {
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .scenario:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .scenario .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .scenario .name { font-weight: 800; font-size: 1.05rem; }
+  .scenario .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; flex-shrink: 0;
+  }
+  .scenario .rate {
+    font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.35rem;
+  }
+  .scenario .final {
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; color: var(--text);
+  }
+  .scenario .final .label {
+    display: block;
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .scenario .real { font-size: 0.85rem; color: var(--inf); margin-top: 0.25rem; }
+  .scenario .bar-bg {
+    height: 8px; border-radius: 999px; background: var(--line);
+    overflow: hidden; margin-top: 0.6rem;
+  }
+  .scenario .bar-fill {
+    height: 100%; border-radius: 999px; transition: width 0.6s ease;
+  }
+  .scenario.low  .bar-fill { background: var(--low); }
+  .scenario.base .bar-fill { background: var(--base); }
+  .scenario.best .bar-fill { background: var(--best); }
+  .scenario .bar-fill.tight { width: 100%; }
+  .scenario .value-track { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+  .scenario .value-track .up { color: var(--best); font-weight: 700; }
+  .scenario .value-track .down { color: var(--low); font-weight: 700; }
+
+  .chart-box { position: relative; margin-bottom: 1.25rem; }
+  .chart-box canvas { width: 100%; height: 260px; display: block; }
+  .chart-legend {
+    display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 0.5rem;
+  }
+  .chart-legend span {
+    display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600;
+  }
+  .chart-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .chart-legend .low  .dot { background: var(--low); }
+  .chart-legend .base .dot { background: var(--base); }
+  .chart-legend .best .dot { background: var(--best); }
+
+  .inflation-box {
+    background: #fafbfc; border-radius: 12px; padding: 1rem 1.2rem;
+    border: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;
+  }
+  .inflation-box .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .inflation-box label { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+  .inflation-box .display-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+  .inflation-box input { padding: 0.5rem 0.75rem; border: 1px solid var(--line); border-radius: 8px; font-size: 0.9rem; width: 80px; outline: none; }
+  .inflation-box input#real-final { width: 14rem; max-width: 100%; }
+  .inflation-result { font-size: 0.9rem; color: var(--text); font-weight: 600; }
+
+  .tip {
+    margin-top: 1rem; font-size: 0.78rem; color: var(--muted); text-align: center;
+    border-top: 1px solid var(--line); padding-top: 1rem;
+  }
+
+  [hidden] { display: none !important; }
+
+  .menu {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.25rem;
+    margin: 0 auto 2.25rem;
+    padding: 0.3rem;
+    border-radius: 999px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+  }
+  .menu a {
+    padding: 0.45rem 1.35rem;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .menu a:hover { color: var(--text); }
+  .menu a[aria-current="page"] {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+  }
+  .menu a:focus-visible, #ticker:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  #panel-market:not([hidden]) { animation: fadeUp 0.35s ease; }
+
+  .ticker-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .ticker-field label { font-size: 0.82rem; font-weight: 600; color: var(--muted); letter-spacing: 0.01em; }
+  #ticker {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 9.5rem;
+    padding: 0.55rem 2.5rem 0.55rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 1rem center;
+    color: var(--text);
+    font: inherit;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  #ticker:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(79,70,229,0.12); }
+  .market-error {
+    margin-bottom: 1.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 0.9rem;
+  }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .metric {
+    display: flex;
+    flex-direction: column;
+    min-height: 9rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fafbfc;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .metric:first-child { background: var(--accent-soft); border-color: #c7d2fe; }
+  .metric:has(.metric-value.up) { background: var(--best-soft); border-color: #a7f3d0; }
+  .metric:has(.metric-value.down) { background: #fef2f2; border-color: #fecaca; }
+  .metric h2 {
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .metric-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric-value.text { font-size: 1.1rem; font-weight: 700; letter-spacing: 0; }
+  .metric-value.up { color: #047857; }
+  .metric-value.down { color: #b91c1c; }
+  .metric-note { margin-top: auto; padding-top: 0.5rem; font-size: 0.8rem; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    #panel-market:not([hidden]) { animation: none; }
+    .metric, .metric:hover { transition: none; transform: none; }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 1.25rem; }
+    .metric { min-height: 0; }
+    header h1 { font-size: 1.5rem; }
+    .scenarios { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <nav class="menu" aria-label="Menu utama">
+      <a href="#kalkulator" data-panel="panel-kalkulator">Kalkulator</a>
+      <a href="#market" data-panel="panel-market">Market</a>
+    </nav>
+
+    <div id="panel-market" hidden>
+      <header>
+        <h1>Market</h1>
+      </header>
+
+      <div class="card">
+        <div class="ticker-field">
+          <label for="ticker">Ticker</label>
+          <select id="ticker">
+            <option value="bbca">BBCA</option>
+            <option value="bmri">BMRI</option>
+            <option value="bbri">BBRI</option>
+            <option value="nisp">NISP</option>
+          </select>
+        </div>
+
+        <p class="market-error" id="market-error" role="alert" hidden></p>
+
+        <div class="metrics" aria-live="polite">
+          <div class="metric">
+            <h2>Nama perusahaan</h2>
+            <p class="metric-value text" id="company-name">—</p>
+          </div>
+          <div class="metric">
+            <h2>Harga penutupan terakhir</h2>
+            <p class="metric-value" id="last-close">—</p>
+            <p class="metric-note" id="close-date"></p>
+          </div>
+          <div class="metric">
+            <h2>Perubahan harian</h2>
+            <p class="metric-value" id="daily-change">—</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-kalkulator">
+    <header>
+      <h1>Tabungan Target</h1>
+      <p>Rencanakan tabungan Anda dengan percaya diri</p>
+    </header>
+
+    <div class="card">
+      <div class="slider-row">
+        <div class="field-label">Tabungan per bulan</div>
+        <input type="range" id="monthly" min="0" max="50000000" step="500000" value="1000000">
+        <div class="value-display" id="monthly-display">Rp 1.000.000</div>
+      </div>
+      <div class="slider-row">
+        <div class="field-label">Lama menabung</div>
+        <input type="range" id="years" min="0" max="50" step="1" value="5">
+        <div class="value-display" id="years-display">5 tahun</div>
+      </div>
+      <div class="slider-row">
+        <div class="field-label">Pengembalian tahunan (base)</div>
+        <input type="range" id="rate" min="0" max="20" step="0.5" value="5">
+        <div class="value-display" id="rate-display">5.00%</div>
+      </div>
+      <div class="slider-row">
+        <div class="field-label">Inflasi per tahun</div>
+        <input type="range" id="inf" min="0" max="8" step="0.5" value="3">
+        <div class="value-display" id="inf-display">3.00%</div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn" id="calc">Hitung Perencanaan</button>
+        <button class="btn btn-ghost" id="reset">Atur Ulang</button>
+      </div>
+
+      <div class="result visible" id="result">
+        <div class="scenarios" id="scenarios"></div>
+
+        <div class="chart-box">
+          <div class="chart-legend" id="legend"></div>
+          <canvas id="chart"></canvas>
+        </div>
+
+        <div class="breakdown" id="breakdown">
+          <div class="breakdown-row">
+            <span class="b-label">Yang Disimpan (kontribusi)</span>
+            <span class="b-value" id="saved-display">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="b-label">Pertumbuhan</span>
+            <span class="b-value" id="growth-display">—</span>
+          </div>
+          <div class="breakdown-row total">
+            <span class="b-label">Pertumbuhan % dari total akhir</span>
+            <span class="b-value" id="growth-pct">—</span>
+          </div>
+        </div>
+
+        <div class="inflation-box">
+          <div>
+            <div class="display-row">
+              <label for="inf-value">Inflasi</label>
+              <input id="inf-value" type="text" inputmode="decimal" readonly>
+              <label for="real-final" style="margin-left:0.75rem;">Nilai nyata akhir</label>
+              <input id="real-final" type="text" inputmode="decimal" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="tip">
+        Low, Base, Best menggunakan deviasi ±3 poin persentase dari tingkat pengembalian base.<br>
+        Semua nilai diperbarui otomatis saat Anda menggeser slider. Grafik menunjukkan saldo kumulatif pada akhir setiap tahun.
+      </p>
+    </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var monthly = document.getElementById('monthly');
+      var years   = document.getElementById('years');
+      var rate    = document.getElementById('rate');
+      var inf     = document.getElementById('inf');
+      var calcBtn = document.getElementById('calc');
+      var resetBtn = document.getElementById('reset');
+      var result  = document.getElementById('result');
+      var scenariosEl = document.getElementById('scenarios');
+      var legendEl = document.getElementById('legend');
+      var canvas = document.getElementById('chart');
+      var ctx = canvas.getContext('2d');
+      var monthlyDisplay = document.getElementById('monthly-display');
+      var yearsDisplay = document.getElementById('years-display');
+      var rateDisplay = document.getElementById('rate-display');
+      var infDisplay = document.getElementById('inf-display');
+      var infValue = document.getElementById('inf-value');
+      var realFinal = document.getElementById('real-final');
+      var savedDisplay = document.getElementById('saved-display');
+      var growthDisplay = document.getElementById('growth-display');
+      var growthPct = document.getElementById('growth-pct');
+
+      var MARGIN = 3;
+      var YEARS = 0;
+      var MONTHLY = 0;
+      var BASE_RATE = 0;
+      var INF_RATE = 0;
+      var LOW_RATE = 0;
+      var BEST_RATE = 0;
+      var FINAL = {};
+      var CUM = {};
+      var REAL_FINAL = {};
+      var SAVED = {};
+      var GROWTH = {};
+      var GROWTH_PCT = {};
+
+      var fmtMonthly = function (v) { return formatRupiah(v); };
+      var fmtYears = function (v) { return Math.round(v) + ' tahun'; };
+      var fmtRate = function (v) { return v.toFixed(2) + '%'; };
+
+      function formatRupiah(v) {
+        return Number(v).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
+      }
+
+      // Short form for chart axes: Rp 20 jt, Rp 1,5 M.
+      function formatRupiahShort(v) {
+        return Number(v).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', notation: 'compact', maximumFractionDigits: 1 });
+      }
+
+      function clearError() {}
+      function setError() {}
+      function fieldOk(v) { return isFinite(v) && v >= 0; }
+
+      function compute() {
+        YEARS = parseFloat(years.value);
+        MONTHLY = parseFloat(monthly.value);
+        BASE_RATE = parseFloat(rate.value);
+        INF_RATE = parseFloat(inf.value);
+
+        LOW_RATE = Math.max(0, BASE_RATE - MARGIN);
+        BEST_RATE = Math.min(20, BASE_RATE + MARGIN);
+
+        var monthlyRateLow = LOW_RATE / 100 / 12;
+        var monthlyRateBase = BASE_RATE / 100 / 12;
+        var monthlyRateBest = BEST_RATE / 100 / 12;
+
+        CUM.LOW  = yearlyCurve(LOW_RATE, monthlyRateLow);
+        CUM.BASE = yearlyCurve(BASE_RATE, monthlyRateBase);
+        CUM.BEST = yearlyCurve(BEST_RATE, monthlyRateBest);
+
+        FINAL.LOW  = CUM.LOW.length ? CUM.LOW[CUM.LOW.length - 1] : 0;
+        FINAL.BASE = CUM.BASE.length ? CUM.BASE[CUM.BASE.length - 1] : 0;
+        FINAL.BEST = CUM.BEST.length ? CUM.BEST[CUM.BEST.length - 1] : 0;
+
+        var infFactor = Math.pow(1 + INF_RATE/100, YEARS);
+        var inv = 1 / infFactor;
+        REAL_FINAL.LOW  = FINAL.LOW  * inv;
+        REAL_FINAL.BASE = FINAL.BASE * inv;
+        REAL_FINAL.BEST = FINAL.BEST * inv;
+
+        // Breakdown: portion of the final amount that is savings vs. growth
+        var totalMonths = YEARS * 12;
+        SAVED.BASE = MONTHLY * totalMonths;
+        GROWTH.BASE = FINAL.BASE - SAVED.BASE;
+        GROWTH_PCT.BASE = FINAL.BASE !== 0 ? (GROWTH.BASE / FINAL.BASE) * 100 : 0;
+
+      }
+
+      function yearlyCurve(rate, monthlyRate) {
+        var curve = [];
+        for (var y = 1; y <= YEARS; y++) {
+          var months = y * 12;
+          if (monthlyRate > 0) {
+            curve.push(MONTHLY * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate));
+          } else {
+            curve.push(MONTHLY * months);
+          }
+        }
+        return curve;
+      }
+
+      function syncDisplays() {
+        monthlyDisplay.textContent = fmtMonthly(parseFloat(monthly.value));
+        yearsDisplay.textContent = fmtYears(parseFloat(years.value));
+        rateDisplay.textContent = fmtRate(parseFloat(rate.value));
+        infDisplay.textContent = fmtRate(parseFloat(inf.value));
+        infValue.value = fmtRate(parseFloat(inf.value));
+      }
+
+      function render() {
+        compute();
+
+        scenariosEl.innerHTML = '';
+        legendEl.innerHTML = '';
+
+        var scenarios = [
+          { key: 'LOW',  name: 'Low',   color: '#f59e0b', soft: '#fffbeb' },
+          { key: 'BASE', name: 'Base',  color: '#4f46e5', soft: '#eef2ff' },
+          { key: 'BEST', name: 'Best',  color: '#10b981', soft: '#ecfdf5' }
+        ];
+
+        scenarios.forEach(function (s) {
+          var rateUsed = s.key === 'LOW' ? LOW_RATE : (s.key === 'BASE' ? BASE_RATE : BEST_RATE);
+          var finalV = FINAL[s.key];
+          var realV = REAL_FINAL[s.key];
+          var diff = finalV - FINAL.BASE;
+          var diffPct = FINAL.BASE !== 0 ? (diff / FINAL.BASE) * 100 : 0;
+          var barWidth = Math.max(0, Math.min(100, 50 + diffPct * 2));
+          var track = diff >= 0 ? 'up' : 'down';
+
+          var el = document.createElement('div');
+          el.className = 'scenario ' + s.key.toLowerCase();
+          el.style.borderColor = s.color;
+          el.style.background = s.soft;
+          el.innerHTML =
+            '<div class="head"><span class="name">' + s.name + '</span>' +
+            '<span class="dot" style="background:' + s.color + ';"></span></div>' +
+            '<div class="rate">' + fmtRate(rateUsed) + ' per tahun</div>' +
+            '<div class="final"><span class="label">Saldo Akhir</span>' + formatRupiah(finalV) + '</div>' +
+            '<div class="real">Nilai setelah inflasi ' + fmtRate(INF_RATE) + ': ' + formatRupiah(realV) + '</div>' +
+            '<div class="bar-bg"><div class="bar-fill' + (Math.abs(diffPct) < 0.1 ? ' tight' : '') + '" style="width:' + barWidth + '%;"></div></div>' +
+            '<div class="value-track"><span>Base</span><span class="' + track + '">' + (diff >= 0 ? '+' : '') + formatRupiah(diff) + '</span></div>';
+          scenariosEl.appendChild(el);
+
+          var leg = document.createElement('span');
+          leg.className = s.key.toLowerCase();
+          leg.innerHTML = '<span class="dot"></span>' + s.name + ' (' + fmtRate(rateUsed) + ')';
+          legendEl.appendChild(leg);
+        });
+
+        drawChart();
+        renderBreakdown();
+        renderInflation();
+      }
+
+      function drawChart() {
+        var w = canvas.clientWidth;
+        var h = canvas.clientHeight;
+        if (w < 1 || h < 1) return; // Panel is hidden; showPanel() redraws when it returns.
+        canvas.width = w;
+        canvas.height = h;
+        ctx.clearRect(0, 0, w, h);
+
+        var data = { LOW: CUM.LOW, BASE: CUM.BASE, BEST: CUM.BEST };
+        var keys = ['LOW', 'BASE', 'BEST'];
+        var colors = { LOW: '#f59e0b', BASE: '#4f46e5', BEST: '#10b981' };
+
+        var allVals = [0]; // The 0 keeps Math.max finite when there are no years to plot.
+        keys.forEach(function (k) { allVals = allVals.concat(data[k]); });
+        var maxVal = Math.max.apply(null, allVals) || 1;
+        var yMax = Math.ceil(maxVal * 1.15 / 1000000) * 1000000;
+
+        ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+        // Reserve exactly the room the widest Y label needs.
+        var labelW = 0;
+        for (var l = 0; l <= 4; l++) {
+          labelW = Math.max(labelW, ctx.measureText(formatRupiahShort((l / 4) * yMax)).width);
+        }
+        var pad = { top: 18, bottom: 30, left: Math.ceil(labelW) + 14, right: 16 };
+        var plotW = w - pad.left - pad.right;
+        var plotH = h - pad.top - pad.bottom;
+
+        // x is the year: data[k][i] is the balance at the end of year i + 1.
+        function xFor(year) { return pad.left + (year / (YEARS || 1)) * plotW; }
+        function yFor(v) { return pad.top + plotH - (v / yMax) * plotH; }
+
+        ctx.fillStyle = '#64748b';
+        for (var g = 0; g <= 4; g++) {
+          var gy = pad.top + (g / 4) * plotH;
+          ctx.beginPath();
+          ctx.moveTo(pad.left, gy);
+          ctx.lineTo(pad.left + plotW, gy);
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          var val = (1 - g / 4) * yMax;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(formatRupiahShort(val), pad.left - 8, gy);
+        }
+
+        keys.forEach(function (k) {
+          ctx.beginPath();
+          ctx.strokeStyle = colors[k];
+          ctx.lineWidth = 2.6;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.moveTo(xFor(0), yFor(0)); // Every plan starts from a zero balance.
+          data[k].forEach(function (v, i) {
+            ctx.lineTo(xFor(i + 1), yFor(v));
+          });
+          ctx.stroke();
+          data[k].forEach(function (v, i) {
+            var cx = xFor(i + 1), cy = yFor(v);
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fillStyle = colors[k];
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          });
+        });
+
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        var step = Math.max(1, Math.floor(YEARS / 5));
+        for (var yr = 0; yr <= YEARS; yr += step) {
+          ctx.fillText(yr + (yr === 0 ? ' tahun' : ''), xFor(yr), pad.top + plotH + 10);
+        }
+
+        ctx.fillStyle = '#1e293b';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('Saldo Kumulatif', pad.left + 6, pad.top + 10);
+      }
+
+      function renderBreakdown() {
+        var saved = SAVED.BASE;
+        var growth = GROWTH.BASE;
+        var pct = GROWTH_PCT.BASE;
+        savedDisplay.textContent = formatRupiah(saved);
+        growthDisplay.textContent = formatRupiah(growth);
+        growthPct.textContent = pct.toFixed(1) + '%';
+      }
+
+      function renderInflation() {
+        realFinal.value = formatRupiah(REAL_FINAL.BASE);
+      }
+
+      calcBtn.addEventListener('click', function () {
+        result.classList.add('visible');
+        render();
+        syncDisplays();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        monthly.value = 1000000;
+        years.value = 5;
+        rate.value = 5;
+        inf.value = 3;
+        syncDisplays();
+        result.classList.add('visible');
+        render();
+      });
+
+      [monthly, years, rate, inf].forEach(function (el) {
+        el.addEventListener('input', function () {
+          syncDisplays();
+          render();
+        });
+      });
+
+      window.addEventListener('resize', function () {
+        if (result.classList.contains('visible')) render();
+      });
+
+      // Initial render: show the default plan immediately so the chart is drawn with a real width.
+      syncDisplays();
+      result.classList.add('visible');
+      render();
+
+      // ----- Market menu: reads only data/<ticker>.json -----
+      var tickerSelect = document.getElementById('ticker');
+      var marketError = document.getElementById('market-error');
+      var companyName = document.getElementById('company-name');
+      var lastClose = document.getElementById('last-close');
+      var closeDate = document.getElementById('close-date');
+      var dailyChange = document.getElementById('daily-change');
+      var marketLoaded = false;
+
+      // daily_close_change is stored as a fraction: 0.0146 means +1.46%.
+      function renderMarket(report) {
+        var overview = (report && report.overview) || {};
+        var price = overview.last_close_price;
+        var change = overview.daily_close_change;
+        var hasChange = typeof change === 'number';
+        var percent = hasChange ? Number((change * 100).toFixed(2)) : 0;
+
+        companyName.textContent = (report && report.company_name) || '—';
+        lastClose.textContent = typeof price === 'number' ? formatRupiah(price) : '—';
+        closeDate.textContent = overview.latest_close_date ? 'Per ' + overview.latest_close_date : '';
+        dailyChange.textContent = hasChange ? (percent > 0 ? '+' : '') + percent.toFixed(2) + '%' : '—';
+        dailyChange.className = 'metric-value' + (percent > 0 ? ' up' : percent < 0 ? ' down' : '');
+      }
+
+      function loadTicker() {
+        var ticker = tickerSelect.value;
+        marketError.hidden = true;
+        fetch('data/' + ticker + '.json')
+          .then(function (response) {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+          })
+          .then(function (report) {
+            // Ignore a slow response if another ticker has been picked since.
+            if (tickerSelect.value === ticker) renderMarket(report);
+          })
+          .catch(function (error) {
+            if (tickerSelect.value !== ticker) return;
+            renderMarket(null);
+            // Browsers block fetch on file:// pages, so explain that case specifically.
+            var hint = location.protocol === 'file:' ? ' Buka halaman ini melalui web server lokal, bukan sebagai file.' : '';
+            marketError.textContent = 'Gagal memuat data/' + ticker + '.json (' + error.message + ').' + hint;
+            marketError.hidden = false;
+          });
+      }
+
+      tickerSelect.addEventListener('change', loadTicker);
+
+      // ----- Menu: #market opens Market, anything else opens the calculator -----
+      function showPanel() {
+        var active = location.hash === '#market' ? 'panel-market' : 'panel-kalkulator';
+        document.querySelectorAll('.menu a').forEach(function (link) {
+          var panelId = link.getAttribute('data-panel');
+          document.getElementById(panelId).hidden = panelId !== active;
+          if (panelId === active) link.setAttribute('aria-current', 'page');
+          else link.removeAttribute('aria-current');
+        });
+        if (active === 'panel-kalkulator') {
+          render(); // The chart can only be sized correctly while its panel is visible.
+        } else if (!marketLoaded) {
+          marketLoaded = true;
+          loadTicker();
+        }
+      }
+
+      window.addEventListener('hashchange', showPanel);
+      showPanel();
+    })();
+  </script>
+</body>
+</html>
