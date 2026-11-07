@@ -1,0 +1,222 @@
+[
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-08",
+    "close": 6000,
+    "open": 6100,
+    "high": 6150,
+    "low": 6000,
+    "volume": 113140300,
+    "market_cap": 732253797000000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-09",
+    "close": 6050,
+    "open": 6025,
+    "high": 6075,
+    "low": 5975,
+    "volume": 87098600,
+    "market_cap": 738355911975000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-12",
+    "close": 5950,
+    "open": 6050,
+    "high": 6100,
+    "low": 5950,
+    "volume": 97965100,
+    "market_cap": 726151682025000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-13",
+    "close": 5950,
+    "open": 5925,
+    "high": 5950,
+    "low": 5850,
+    "volume": 122716900,
+    "market_cap": 726151682025000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-14",
+    "close": 6125,
+    "open": 6000,
+    "high": 6125,
+    "low": 5950,
+    "volume": 136303100,
+    "market_cap": 747509084437500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-15",
+    "close": 6075,
+    "open": 6075,
+    "high": 6125,
+    "low": 6025,
+    "volume": 134763200,
+    "market_cap": 741406969462500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-16",
+    "close": 5175,
+    "open": 5175,
+    "high": 5825,
+    "low": 5175,
+    "volume": 1241098200,
+    "market_cap": 631568899912500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-19",
+    "close": 4820,
+    "open": 4820,
+    "high": 4910,
+    "low": 4820,
+    "volume": 382924400,
+    "market_cap": 588243883590000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-20",
+    "close": 5200,
+    "open": 4740,
+    "high": 5200,
+    "low": 4740,
+    "volume": 1131013100,
+    "market_cap": 634619957400000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-21",
+    "close": 5275,
+    "open": 5300,
+    "high": 5350,
+    "low": 5125,
+    "volume": 433591700,
+    "market_cap": 643773129862500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-22",
+    "close": 5175,
+    "open": 5125,
+    "high": 5275,
+    "low": 5100,
+    "volume": 286928500,
+    "market_cap": 631568899912500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-23",
+    "close": 5025,
+    "open": 5175,
+    "high": 5225,
+    "low": 5000,
+    "volume": 495623900,
+    "market_cap": 613262554987500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-26",
+    "close": 4940,
+    "open": 5025,
+    "high": 5075,
+    "low": 4940,
+    "volume": 353641200,
+    "market_cap": 602888959530000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-27",
+    "close": 4900,
+    "open": 4940,
+    "high": 4980,
+    "low": 4800,
+    "volume": 366846200,
+    "market_cap": 598007267550000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-28",
+    "close": 5275,
+    "open": 4920,
+    "high": 5325,
+    "low": 4920,
+    "volume": 583695400,
+    "market_cap": 643773129862500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-29",
+    "close": 4940,
+    "open": 5275,
+    "high": 5325,
+    "low": 4940,
+    "volume": 312439900,
+    "market_cap": 602888959530000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-10-30",
+    "close": 4980,
+    "open": 4900,
+    "high": 5025,
+    "low": 4900,
+    "volume": 286386300,
+    "market_cap": 607770651510000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-11-02",
+    "close": 4980,
+    "open": 5025,
+    "high": 5100,
+    "low": 4970,
+    "volume": 196618100,
+    "market_cap": 607770651510000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-11-03",
+    "close": 4840,
+    "open": 5050,
+    "high": 5050,
+    "low": 4820,
+    "volume": 266103300,
+    "market_cap": 590684729580000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-11-04",
+    "close": 4930,
+    "open": 4840,
+    "high": 4980,
+    "low": 4830,
+    "volume": 269099800,
+    "market_cap": 601668536535000
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-11-05",
+    "close": 5125,
+    "open": 5050,
+    "high": 5125,
+    "low": 5025,
+    "volume": 166336900,
+    "market_cap": 625466784937500
+  },
+  {
+    "symbol": "BBCA.JK",
+    "date": "2026-11-06",
+    "close": 5200,
+    "open": 5025,
+    "high": 5200,
+    "low": 4990,
+    "volume": 160152800,
+    "market_cap": 634619957400000
+  }
+]
